@@ -1,23 +1,40 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 
 from events.models import Report
 from events.forms import CreateReport
+
+from datetime import datetime
+import geohash 
 # Create your views here.
 
 def create_report(request):
     if request.method == 'POST':
+
         form = CreateReport(request.POST)
 
-        print("daaaaaaaaamn")
-        print(form.is_valid())
+        if form.is_valid() == False:
+            return redirect(reports)
 
-        if form.is_valid():
-            return render(request, "base.html")
+        print(form.cleaned_data)
 
-            
+        now = datetime.now()
+        new_report = Report(
+            creation_date=now, 
+            title=form.cleaned_data['title'], 
+            description=form.cleaned_data['description'],
+            location_lat=form.cleaned_data['lat'],
+            location_lng=form.cleaned_data['lng'],
+            location_geohash=geohash.encode(form.cleaned_data['lat'], form.cleaned_data['lng'], precision=12),
+            value=0)
 
-    return render(request, "create_report.html")
+        new_report.save()
+
+        print(form.cleaned_data['uploadfile'])
+
+        return redirect(reports)
+    else:
+        return render(request, "create_report.html")
 
     
 def reports(request):

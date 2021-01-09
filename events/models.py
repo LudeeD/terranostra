@@ -12,8 +12,10 @@ class Report(models.Model):
     location_lat = models.DecimalField(max_digits=8, decimal_places=5)
     location_lng = models.DecimalField(max_digits=8, decimal_places=5)
     location_geohash  = models.CharField(max_length=12)
-    photo = models.ImageField(upload_to='static/upload')
     value = models.PositiveIntegerField()
+
+class ImageUploads(models.Model):
+    data = models.BinaryField()
 
 class Votes(models.Model):
     voter = models.ForeignKey(Profile, on_delete=models.CASCADE)
