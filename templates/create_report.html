@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm">
+            <div class="card" style="padding: 5%;">
+                <h1 style="margin-bottom: 20px;">New Report</h1>
+                <form method="POST" action="{% url 'create_report' %}"> {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-lg" id="title" name="title" aria-describedby="title" placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="timestamp" name="timestamp" aria-describedby="timestamp" readonly>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <textarea id="description" name="description" class="form-control" rows="3" placeholder="Write some description" required></textarea>
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <input type="number" step="0.00001" class="form-control" id="Lat" name="lat" placeholder="Lat">
+                        </div>
+                        <div class="col-sm">
+                            <input type="number" step="0.00001" class="form-control" id="Lng" name="lng" placeholder="Lng">
+                        </div>
+                        <div class="col-sm justify-content-center">
+                            <button onclick="getcoordinates()" type="button" class="btn btn-primary">Get coordinates</button>
+                        </div>
+                        <small id="locationhelp" class="form-text text-muted">We only use your location to fill this form</small>
+                    </div>
+
+                    <br>
+                    <div class="form-group">
+                        <label for="label">Add some image</label>
+                        <input type="file" class="form-control" id="uploadfile" name="uploadfile">
+                    </div>
+
+                    <br>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var element = document.getElementById("timestamp");
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date + ' ' + time;
+
+    element.value = dateTime
+
+    function getcoordinates() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                var element = document.getElementById("Lat");
+                element.value = position.coords.latitude.toFixed(5)
+                element = document.getElementById("Lng");
+                element.value = position.coords.longitude.toFixed(5)
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.")
+        }
+
+    }
+
+</script>
+{% endblock %}

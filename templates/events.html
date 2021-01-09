@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block add_content %}
+{% if type == "Reports" %}
+<a class="btn btn-success" style="margin-right: 10px;" href="{% url 'create_report' %}" role="button">Create New</a>
+{% endif%}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm">
+            <br>
+            <h1 class="display-5 text-center">{{ type }}</h1>
+            <p class="text-center">
+                Order by:
+                <a href="?order=date">Date</a> ,
+                <a href="?order=votes">Votes</a>
+            </p>
+            <br>
+            {% for report in page_obj %}
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-lg-4 text-center" style="padding: 1%;">
+                        <img class="rounded img-responsive" src="{{ report.photo.url }}" alt="User addedd photo">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ report.title|truncatewords:10 }}</h5>
+                            <p class="card-text"><small class="text-muted">Votes: {{ report.value }} | Created at: {{ report.creation_date }}</small></p>
+                            <p class="card-text">{{ report.description|truncatewords:50 }}</p>
+                            <p class="card-text"><a href="https://www.google.com">Know more</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+
+<br>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+        {% endif %}
+
+        <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+{% endblock %}

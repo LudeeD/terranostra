@@ -1,0 +1,61 @@
+{% extends "../base.html" %}
+
+{% load account %}
+{% load socialaccount %}
+{% load i18n %}
+
+{% block content %}
+
+<br>
+<br>
+
+<div class="container mx-auto align-middle" style="width: 25rem;">
+
+    <div class="card rounded" style="width: 25rem; padding: 5%;">
+        <div class="card-body">
+            <h5 class="display-3 card-title">{% trans "Sign In" %}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">BeSustainable</h6>
+
+            <br>
+
+            <form class="login" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button class="btn btn-primary" type="submit">Sign In</button>
+                <a class="btn btn-secondary" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+            </form>
+
+            <br>
+
+            <p class="card-text">
+                Don't have an account? No problem, you can always
+                <a href="{{ signup_url }}" class="card-link">sign up</a>
+                or use on of our providers:
+            </p>
+
+            {% get_providers as socialaccount_providers %}
+
+            {% for provider in socialaccount_providers %}
+            {% if provider.id == "openid" %}
+            {% for brand in provider.get_brands %}
+            <li>
+                <a title="{{brand.name}}" class="socialaccount_provider {{provider.id}} {{brand.id}}"
+                    href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">{{brand.name}}</a>
+            </li>
+            {% endfor %}
+            {% endif %}
+            <li>
+                <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}}"
+                    href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{{provider.name}}</a>
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
