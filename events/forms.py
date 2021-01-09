@@ -5,4 +5,4 @@ class CreateReport(forms.Form):
     description = forms.CharField()
     lat = forms.FloatField()
     lng = forms.FloatField()
-    uploadfile = forms.FileField(required=False)
+    uploadfile = forms.ImageField(required=False)

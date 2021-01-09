@@ -5,6 +5,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     reputation = models.PositiveIntegerField()
 
+class ImageUploads(models.Model):
+    slug = models.CharField(max_length=6)
+    data = models.BinaryField()
+
 class Report(models.Model):
     creation_date = models.DateTimeField('date created')
     title = models.CharField(max_length=100)
@@ -13,9 +17,7 @@ class Report(models.Model):
     location_lng = models.DecimalField(max_digits=8, decimal_places=5)
     location_geohash  = models.CharField(max_length=12)
     value = models.PositiveIntegerField()
-
-class ImageUploads(models.Model):
-    data = models.BinaryField()
+    uploadimage = models.CharField(max_length=6)
 
 class Votes(models.Model):
     voter = models.ForeignKey(Profile, on_delete=models.CASCADE)
