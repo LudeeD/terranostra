@@ -26,15 +26,15 @@
             <div class="card">
                 <div class="row g-0">
                     <div class="col-lg-4 text-center" style="padding: 1%;">
-                        <!--img class="rounded img-responsive" src="{{ report.photo.url }}" alt="User addedd photo"-->
-                        <img class="rounded img-responsive" src="https://picsum.photos/250" alt="User addedd photo">
+                        <img class="rounded img-responsive" src="{% url 'uploadedimage' report.uploadimage %}" alt="User addedd photo">
+                        <!--img class="rounded img-responsive" src="https://picsum.photos/250" alt="User addedd photo"-->
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title">{{ report.title|truncatewords:10 }}</h5>
                             <p class="card-text"><small class="text-muted">Votes: {{ report.value }} | Created at: {{ report.creation_date }}</small></p>
                             <p class="card-text">{{ report.description|truncatewords:50 }}</p>
-                            <p class="card-text"><a href="https://www.google.com">Know more</a></p>
+                            <p class="card-text"><a href="{% url 'detail_report' report.id %}">Know more</a></p>
                         </div>
                     </div>
                 </div>

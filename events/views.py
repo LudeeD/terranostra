@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core.files import File
+from django.contrib.auth.decorators import login_required
 
 from events.models import Report, ImageUploads
 from events.forms import CreateReport
@@ -17,6 +18,7 @@ import random
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+@login_required
 def create_report(request):
     if request.method == 'POST':
 
@@ -40,7 +42,6 @@ def create_report(request):
             im = Image.open(request.FILES['uploadfile'])
             im.thumbnail((250,250))
             im.save(blob, 'JPEG')
-            im.show()
             image_id = id_generator()
             #print(image_id)
             data = blob.getvalue()
@@ -86,3 +87,29 @@ def reports(request):
     page_obj = pages.get_page(page_number)
 
     return render(request, 'events.html', {'type': 'Reports','page_obj': page_obj})
+
+
+def detail_report(request, id):
+    report = Report.objects.get(id=id)
+    return render(request, 'detail.html' , {'report': report})
+
+@login_required
+def endorse_report(request, id):
+    report = Report.objects.get(id=id)
+    report.value += 1
+    report.save()
+    return render(request, 'detail.html' , {'report': report})
+
+@login_required
+def reject_report(request, id):
+    report = Report.objects.get(id=id)
+    if report.value > 0:
+        report.value -= 1
+    report.save()
+    return render(request, 'detail.html' , {'report': report})
+
+
+@login_required
+def profile(request):
+    print(request.user)
+    return render(request, 'account/profile.html')

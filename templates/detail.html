@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm">
+            <br>
+            <h1 class="display-5 text-center">Report #{{ report.id }}</h1>
+            <br>
+            <div class="card d-block">
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ report.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Created at: {{ report.creation_date }}</h6>
+                    <p class="card-text">{{ report.description }}</p>
+                    <div class="text-center">
+                        <img class="rounded" src="{% url 'uploadedimage' report.uploadimage %}" >
+                    </div>
+                    <br>
+                    {% if user.is_authenticated %}
+                    <div class="text-center">
+                        <p>Current Votes: {{ report.value }}</p>
+                        <a class="btn btn-success" href="{% url 'endorse_report' report.id %}" role="button">Endorse️</a>
+                        <a class="btn btn-danger" href="{% url 'reject_report' report.id %}" role="button">Reject</a>
+                    </div>
+                    {% else %}
+                    <div class="text-center">
+                        <p>Current Votes: {{ report.value }}</p>
+                        <a class="btn btn-success disabled" href="" role="button">Endorse️</a>
+                        <a class="btn btn-danger disabled" href="" role="button">Reject</a>
+                        <br>
+                        <br>
+                        <p>You need to <a href="{% url 'account_login' %}">Login</a> if you want to endorse or reject this report 🔒</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+
+<br>
+
+{% endblock %}

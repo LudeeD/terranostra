@@ -16,13 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from events.views import reports, create_report, uploadedimage
+from events.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('uploads/<slug:slug>/', uploadedimage),
-    path('', reports, name="reports"),
+    path('accounts/profile/', profile),
+    path('uploads/<slug:slug>/', uploadedimage, name="uploadedimage"),
     path('reports/', reports, name="reports"),
+    path('report/<int:id>/', detail_report, name="detail_report"),
+    path('report/<int:id>/endorse/', endorse_report, name="endorse_report"),
+    path('report/<int:id>/reject/', reject_report, name="reject_report"),
     path('report/', create_report, name="create_report"),
+    path('', reports, name="reports"),
 ]
