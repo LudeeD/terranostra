@@ -113,3 +113,7 @@ def reject_report(request, id):
 def profile(request):
     print(request.user)
     return render(request, 'account/profile.html')
+
+
+def map_page(request):
+    return render(request, 'map.html')

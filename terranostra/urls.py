@@ -21,12 +21,13 @@ from events.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('accounts/profile/', profile),
+    path('accounts/profile/', profile, name='profile'),
     path('uploads/<slug:slug>/', uploadedimage, name="uploadedimage"),
     path('reports/', reports, name="reports"),
     path('report/<int:id>/', detail_report, name="detail_report"),
     path('report/<int:id>/endorse/', endorse_report, name="endorse_report"),
     path('report/<int:id>/reject/', reject_report, name="reject_report"),
     path('report/', create_report, name="create_report"),
+    path('map/', map_page, name="map_page"),
     path('', reports, name="reports"),
 ]

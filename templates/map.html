@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css"
+    type="text/css">
+<style>
+    .map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">
+        </div>
+
+        <div class="col-sm">
+            <div class="card">
+                <div id='map' class='map'></div>
+                <div id="popup" class="ol-popup">
+                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                    <div id="popup-content"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 id="title" class="card-title">Select one</h5>
+                <h6 id="type" class="card-subtitle mb-2 text-muted"></h6>
+                <p id="text" class="card-text"></p>
+            </div>
+        </div>
+        <div class="col-sm-2">
+        </div>
+    </div>
+</div>
+
+<br>
+{% load static %}
+
+<script type="text/javascript">
+
+    var elements = [
+        { id: 2, location: [4.35247, 50.84673], title: "Demo", type: "Report", votes: "20", link: "www.google.com" },
+        { id: 2, location: [4.35250, 50.84673], title: "Demo2", type: "Report", votes: "20", link: "www.google.com" },
+        { id: 3, location: [4.35245, 50.84673], title: "Demo3", type: "Report", votes: "20", link: "www.google.com" },
+        { id: 4, location: [4.35242, 50.84673], title: "Demo4", type: "Report", votes: "20", link: "www.google.com" },
+    ]
+
+    var features = elements.map(x => {
+        return new ol.Feature({
+            name: x.id.toString(10),
+            geometry: new ol.geom.Point(ol.proj.fromLonLat(x.location))
+        })
+    })
+
+    var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({ features: features }),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 46],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+                scale: 0.05,
+                src: "{% static 'img.png' %}"
+            })
+        })
+    });
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            layer
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([4.35247, 50.84673]),
+            zoom: 4
+        }),
+    });
+
+    var title = document.getElementById("title")
+    var type = document.getElementById("type")
+    var text = document.getElementById("text")
+
+    map.on('singleclick', function (event) {
+        console.log("damen")
+        if (map.hasFeatureAtPixel(event.pixel) === true) {
+
+            feature = map.getFeaturesAtPixel(event.pixel)
+
+            console.log(feature[0].getProperties().name)
+
+            var result = elements.find(obj => {
+                return obj.id == feature[0].getProperties().name
+            })
+
+            console.log(result)
+
+            title.innerText = result.title
+            type.innerText = result.type + " with " + result.votes + " votes"
+            text.innerHTML = "You can learn more about it <a href=\""+ result.link + "\">here</a>"
+        }else{
+            title.innerText = "Select one"
+            type.innerText = ""
+            text.innerText = ""
+
+        }    
+    });
+
+</script>
+{% endblock %}

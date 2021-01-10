@@ -17,8 +17,11 @@
                     <h5 class="card-title">{{ report.title }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Created at: {{ report.creation_date }}</h6>
                     <p class="card-text">{{ report.description }}</p>
+
                     <div class="text-center">
-                        <img class="rounded" src="{% url 'uploadedimage' report.uploadimage %}" >
+                        {% if report.uploadimage  %}
+                            <img class="rounded" src="{% url 'uploadedimage' report.uploadimage %}" >
+                        {% endif %}
                     </div>
                     <br>
                     {% if user.is_authenticated %}

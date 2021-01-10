@@ -26,8 +26,11 @@
             <div class="card">
                 <div class="row g-0">
                     <div class="col-lg-4 text-center" style="padding: 1%;">
-                        <img class="rounded img-responsive" src="{% url 'uploadedimage' report.uploadimage %}" alt="User addedd photo">
-                        <!--img class="rounded img-responsive" src="https://picsum.photos/250" alt="User addedd photo"-->
+                        {% if report.uploadimage  %}
+                            <img class="rounded img-responsive" src="{% url 'uploadedimage' report.uploadimage %}" alt="User addedd photo">
+                        {% else %}
+                            <img class="rounded img-responsive" src="https://picsum.photos/250/?blur=10" alt="User addedd photo">
+                        {% endif %}
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
