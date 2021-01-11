@@ -29,5 +29,6 @@ urlpatterns = [
     path('report/<int:id>/reject/', reject_report, name="reject_report"),
     path('report/', create_report, name="create_report"),
     path('map/', map_page, name="map_page"),
+    path('events/', events, name="events"),
     path('', reports, name="reports"),
 ]

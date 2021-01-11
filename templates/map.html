@@ -18,12 +18,11 @@
         </div>
 
         <div class="col-sm">
+
             <div class="card">
                 <div id='map' class='map'></div>
-                <div id="popup" class="ol-popup">
-                    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                    <div id="popup-content"></div>
-                </div>
+                <button type="button" onclick="center()" class=" btn btn-success">Center on my location</button>
+
             </div>
             <div class="card-body">
                 <h5 id="title" class="card-title">Select one</h5>
@@ -41,11 +40,22 @@
 
 <script type="text/javascript">
 
+    function center() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                lat = position.coords.latitude.toFixed(5)
+                lng = position.coords.longitude.toFixed(5)
+                window.location.href = "/map/?lat="+lat+"&lng="+lng;
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.")
+        }
+    }
+
     var elements = [
-        { id: 2, location: [4.35247, 50.84673], title: "Demo", type: "Report", votes: "20", link: "www.google.com" },
-        { id: 2, location: [4.35250, 50.84673], title: "Demo2", type: "Report", votes: "20", link: "www.google.com" },
-        { id: 3, location: [4.35245, 50.84673], title: "Demo3", type: "Report", votes: "20", link: "www.google.com" },
-        { id: 4, location: [4.35242, 50.84673], title: "Demo4", type: "Report", votes: "20", link: "www.google.com" },
+        {% for report in reports %}
+            { id: {{ report.id }}, location: [{{ report.lng }}, {{ report.lat }}], title: "{{ report.title }}", type: "{{ report.type }}", votes: {{ report.votes }}, link: "/report/{{ report.id }}" },
+        {% endfor %}
     ]
 
     var features = elements.map(x => {
@@ -77,8 +87,8 @@
             layer
         ],
         view: new ol.View({
-            center: ol.proj.fromLonLat([4.35247, 50.84673]),
-            zoom: 4
+            center: ol.proj.fromLonLat([{{ lng }}, {{ lat }}]),
+            zoom: 13
         }),
     });
 
@@ -102,13 +112,13 @@
 
             title.innerText = result.title
             type.innerText = result.type + " with " + result.votes + " votes"
-            text.innerHTML = "You can learn more about it <a href=\""+ result.link + "\">here</a>"
-        }else{
+            text.innerHTML = "You can learn more about it <a href=\"" + result.link + "\">here</a>"
+        } else {
             title.innerText = "Select one"
             type.innerText = ""
             text.innerText = ""
 
-        }    
+        }
     });
 
 </script>

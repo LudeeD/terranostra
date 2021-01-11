@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.core.files import File
 from django.contrib.auth.decorators import login_required
 
-from events.models import Report, ImageUploads
+from events.models import Report, ImageUploads, Votes, Profile
 from events.forms import CreateReport
 
 from datetime import datetime
@@ -13,6 +13,7 @@ from PIL import Image
 from io import BytesIO, StringIO
 import string
 import random
+import requests
 # Create your views here.
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
@@ -111,9 +112,40 @@ def reject_report(request, id):
 
 @login_required
 def profile(request):
-    print(request.user)
     return render(request, 'account/profile.html')
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 def map_page(request):
-    return render(request, 'map.html')
+    lat = request.GET.get('lat', None)
+    lng = request.GET.get('lng', None)
+
+    if lat == None or lng == None:
+        return redirect(f"/map/?lat=41.1579&lng=-8.6291")
+
+
+    location_geohash=geohash.encode(float(lat), float(lng), precision=4)
+    reports = Report.objects.filter(location_geohash__startswith=location_geohash)
+
+    result = []
+    for report in reports:
+        result.append({
+            "id" : report.id,
+            "lng" : report.location_lng,
+            "lat" : report.location_lat,
+            "title" : report.title,
+            "type" : "Report",
+            "votes" :  report.value
+        })
+
+    return render(request, 'map.html', {"lng": lng, "lat": lat, "reports": result})
+
+
+def events(request):
+    return render(request, 'todo.html')
