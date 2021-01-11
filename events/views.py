@@ -36,6 +36,7 @@ def create_report(request):
             location_lat=form.cleaned_data['lat'],
             location_lng=form.cleaned_data['lng'],
             location_geohash=geohash.encode(form.cleaned_data['lat'], form.cleaned_data['lng'], precision=12),
+            uploadimage="0",
             value=0)
 
         try:
